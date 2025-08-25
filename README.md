@@ -1,0 +1,42 @@
+# 'version()'
+
+A Deno specific module written in TypeScript used to display basic version
+information for any command line application.
+
+## Modules Overview
+
+A brief description of the modules purpose is below.
+
+- `version.ts` : contains function `version()` used to display basic version
+  information for any Deno command line application.
+
+For more information, see the source code itself, as that includes additional
+comments. The tests for each module also provide examples of usage.
+
+## Example Output
+
+The following is an example output from a Deno CLI program using this module:
+
+```shell
+% ~> qpass -v
+
+Application 'qpass.ts' is version '0.3.0'.
+Last modified on: Mon, 25 Aug 2025 13:18:17 GMT
+Running Deno version '2.4.4' on 'Darwin [aarch64 with 14 CPU cores]'.
+Copyright (c) 2023-2025 Simon Rowe.
+
+For licenses and further information visit:
+ - https://github.com/wiremoons/qpass/
+ - https://deno.land/
+```
+
+## Tests
+
+The `version` module and supporting exports have associated tests. These can be
+run with the command: `deno test --allow-read`
+
+## License
+
+The code provided is covered by the **MIT License**. See
+http://opensource.org/licenses/mit. A copy of the applications license is
+included with the code.
