@@ -1,3 +1,6 @@
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hyperium/hyper/master/LICENSE)
+[![](https://img.shields.io/badge/deno-v2.4.5-green.svg)](https://github.com/denoland/deno)
+
 # 'version()'
 
 A Deno specific module written in TypeScript used to display basic version

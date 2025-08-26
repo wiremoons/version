@@ -16,7 +16,7 @@
  * be customised using the `interface` named: `VersionOptions`.
  *
  * @note The program should be used as a module, but can be run also with Deno using the command:
- * @code deno run --quiet ---allow-read ./version.ts
+ * @code deno run --quiet --allow-read ./version.ts
  */
 
 //--------------------------------
@@ -25,7 +25,7 @@
 import { basename } from "jsr:@std/path@1.x/basename";
 import { fromFileUrl } from "jsr:@std/path@1.x";
 
-/** Options for the function `version()`
+/** Options for the function `version()` via 'VersionOptions' interface
  * @details Pass in the four (4) *VersionOptions* object parameters to modify the `version()` text output.
  * @param version : string - The version of the program the output is to represent. Example: '0.0.1'
  * @param copyrightName : string - Copyright holder for the program. Example: 'Deno Dinosaur <deno@deno.land>'
@@ -61,6 +61,8 @@ export async function getFileModTime(
   if (filePath.startsWith("file:")) {
     filePath = fromFileUrl(filePath);
   }
+  // debug : show final path being used:
+  console.debug(`DEBUG: final path for 'getFileModTime()' is: ${filePath}`);
   // get file stat and extract modified time value
   try {
     const fileInfo = await Deno.lstat(filePath);
