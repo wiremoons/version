@@ -1,4 +1,3 @@
-#!/usr/bin/env -S deno test --quiet --allow-read
 /**
  * @file version_test.ts
  * @brief TEST for module to display version information for a Deno program.
@@ -16,7 +15,7 @@
  * The output fields to display can be customised using the `interface` named: `VersionOptions`.
  *
  * @note TEST script that can be run with Deno using the command:
- * @code deno test --allow-read
+ * @code deno task test
  */
 
 //--------------------------------
@@ -51,37 +50,37 @@ if (permCheck.state === "prompt") {
 
 // Check all the modules needed for the tests are imported
 
-Deno.test("'jsr:@std/assert' module is imported: 'assertStringIncludes()'", () => {
+Deno.test("[i] 'jsr:@std/assert' module is imported: 'assertStringIncludes()'", () => {
   if (!assertStringIncludes) {
     throw Error("missing module");
   }
 });
 
-Deno.test("'jsr:@std/assert' module is imported: 'assertEquals()'", () => {
+Deno.test("[i] 'jsr:@std/assert' module is imported: 'assertEquals()'", () => {
   if (!assertEquals) {
     throw Error("missing module");
   }
 });
 
-Deno.test("'jsr:@std/path' module is imported: 'fromFileUrl()'", () => {
+Deno.test("[i] 'jsr:@std/path' module is imported: 'fromFileUrl()'", () => {
   if (!fromFileUrl) {
     throw Error("missing module");
   }
 });
 
-Deno.test("'./version.ts' module and function is imported: 'version()'", () => {
+Deno.test("[i] './version.ts' module and function is imported: 'version()'", () => {
   if (!version) {
     throw Error("missing module");
   }
 });
 
-Deno.test("'./version.ts' function is imported: 'getFileModTime()'", () => {
+Deno.test("[i] 'getFileModTime' function is imported: 'getFileModTime()'", () => {
   if (!getFileModTime) {
     throw Error("missing module");
   }
 });
 
-Deno.test("'./version.ts' function is imported: 'isString()'", () => {
+Deno.test("[i] 'isString' function is imported: 'isString()'", () => {
   if (!isString) {
     throw Error("missing module");
   }
@@ -98,7 +97,7 @@ const denoCpuCores = navigator.hardwareConcurrency;
 
 // NOTE: the tests below will need to be updated if being run on different systems!
 
-Deno.test("'version()' application test : default", async () => {
+Deno.test("[*] version() : default call output check (true)", async () => {
   const testModTime = await getFileModTime("./version_test.ts");
   let actual = "";
 
@@ -133,41 +132,41 @@ Deno.test("'version()' application test : default", async () => {
 });
 
 // Tests for 'isString()' below:
-Deno.test("isString() 'type_guard' exported function tests : check is string (text)", () => {
+Deno.test("[*] isString() 'type_guard' : check is string (text)", () => {
   const actual1 = true;
   const test1 = isString("This is a test string.");
   assertEquals(test1, actual1);
 });
 
-Deno.test("isString() 'type_guard' exported function tests : check is string (variable)", () => {
+Deno.test("[*] isString() 'type_guard' : check is string (variable)", () => {
   const actual2 = true;
   const testData2 = "This is a test string.";
   const test2 = isString(testData2);
   assertEquals(test2, actual2);
 });
 
-Deno.test("isString() 'type_guard' exported function tests : check number is string (false)", () => {
+Deno.test("[*] isString() 'type_guard' : check number is string (false)", () => {
   const actual3 = false;
   const testData3 = 33;
   const test3 = isString(testData3);
   assertEquals(test3, actual3);
 });
 
-Deno.test("isString() 'type_guard' exported function tests : check boolean is string (false)", () => {
+Deno.test("[*] isString() 'type_guard' : check boolean is string (false)", () => {
   const actual4 = false;
   const testData4 = true;
   const test4 = isString(testData4);
   assertEquals(test4, actual4);
 });
 
-Deno.test("isString() 'type_guard' exported function tests : check object is string (false)", () => {
+Deno.test("[*] isString() 'type_guard' : check object is string (false)", () => {
   const actual5 = false;
   const testData5 = { "test": 123 };
   const test5 = isString(testData5);
   assertEquals(test5, actual5);
 });
 
-Deno.test("isString() 'type_guard' exported function tests : check undefined is string (false)", () => {
+Deno.test("[*] isString() 'type_guard' : check undefined is string (false)", () => {
   const actual6 = false;
   const testData6 = undefined;
   const test6 = isString(testData6);
@@ -177,8 +176,62 @@ Deno.test("isString() 'type_guard' exported function tests : check undefined is 
 // Tests for 'getFileModTime()' below:
 const testModTime = await getFileModTime("./version.ts");
 
-Deno.test("'getFileModTime()' exported function test : exist file (true)", async () => {
+Deno.test("[*] getFileModTime()' : exist file (true)", async () => {
   const actual1 = testModTime;
   const test1 = await getFileModTime("./version.ts");
   assertEquals(test1, actual1);
+});
+
+Deno.test("[*] getFileModTime()' : promise.reject for empty path (true)", async () => {
+  // Use a try...catch block to handle the rejected promise
+  try {
+    await getFileModTime("");
+    // If the above line does not throw, the test fails
+    throw new Error("Function did not reject for empty path.");
+  } catch (err) {
+    // Assert that the rejected promise's error message is as expected
+    assertEquals(err, "UNKNOWN as no file path available.");
+  }
+});
+
+Deno.test("[*] getFileModTime()' : promise.reject for 'https' remote execution (true)", async () => {
+  // Use a try...catch block to handle the rejected promise
+  try {
+    await getFileModTime(
+      "https://raw.githubusercontent.com/wiremoons/qpass/main/qpass.ts",
+    );
+    // If the above line does not throw, the test fails
+    throw new Error("Function did not reject for remote execution path.");
+  } catch (err) {
+    // Assert that the rejected promise's error message is as expected
+    assertEquals(err, "UNKNOWN due to remote execution.");
+  }
+});
+
+Deno.test("[*] getFileModTime()' : promise.reject for 'http' remote execution (true)", async () => {
+  // Use a try...catch block to handle the rejected promise
+  try {
+    await getFileModTime(
+      "https://raw.githubusercontent.com/wiremoons/qpass/main/qpass.ts",
+    );
+    // If the above line does not throw, the test fails
+    throw new Error("Function did not reject for remote execution path.");
+  } catch (err) {
+    // Assert that the rejected promise's error message is as expected
+    assertEquals(err, "UNKNOWN due to remote execution.");
+  }
+});
+
+Deno.test("[*] getFileModTime()' : promise.reject for non existant file (true)", async () => {
+  // Use a try...catch block to handle the rejected promise
+  try {
+    await getFileModTime(
+      "./non_existant_file.txt",
+    );
+    // If the above line does not throw, the test fails
+    throw new Error("Function did not reject for remote execution path.");
+  } catch (err) {
+    // Assert that the rejected promise's error message is as expected
+    assertEquals(err, "UNKNOWN Deno.lstat failed for ./non_existant_file.txt");
+  }
 });

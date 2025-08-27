@@ -1,6 +1,10 @@
 {
   "name": "@wiremoons/version",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
-  "exports": "./version.ts"
+  "exports": "./version.ts",
+  "tasks": {
+    "test": "deno test --quiet --allow-read ./version_test.ts",
+    "run": "deno run --quiet --allow-read ./version.ts"
+  }
 }

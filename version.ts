@@ -1,4 +1,3 @@
-#!/usr/bin/env -S deno run --quiet --allow-read
 /**
  * @file version.ts
  * @brief Display version information for a Deno command line program.
@@ -11,12 +10,13 @@
  * @date originally created: 24 Aug 2021
  * @date updated significantly: 31 Aug 2021
  * @date moved to jsr.io: 25 Aug 2025
+ * @date improve remote handling for 'getFileModTime()': 27 Aug 2025
  *
  * @details Display version information for a Deno command line (CLI) program. The output fields displayed can
  * be customised using the `interface` named: `VersionOptions`.
  *
  * @note The program should be used as a module, but can be run also with Deno using the command:
- * @code deno run --quiet --allow-read ./version.ts
+ * @code deno task run
  */
 
 //--------------------------------
@@ -48,39 +48,36 @@ export function isString(arg: unknown): arg is string {
   return typeof arg === "string";
 }
 
-/** Obtain `filePath` modification date and time */
-export async function getFileModTime(
-  filePath: string,
-): Promise<string | undefined> {
-  if (filePath.length < 1) {
-    return Promise.reject(
-      new Error("Zero length file name provided to function 'getFileModTime'"),
-    );
-  }
-  // check for URL path instead of OS path - convert to an OS path
-  if (filePath.startsWith("file:")) {
-    filePath = fromFileUrl(filePath);
-  }
-  // debug : show final path being used:
-  console.debug(`DEBUG: final path for 'getFileModTime()' is: ${filePath}`);
-  // get file stat and extract modified time value
-  try {
-    const fileInfo = await Deno.lstat(filePath);
-    if (fileInfo.isFile) {
-      const result = fileInfo.mtime;
-      return result ? result.toUTCString() : undefined;
-    }
-  } catch {
-    return Promise.reject(
-      new Error("Unable to 'Deno.lstat' file in function 'getFileModTime'"),
-    );
-  }
-}
-
 /** Capitalise the first character of a string */
 export function toTitleCaseFirst(str: string): string {
   if (!isString(str) || str.length === 0) return str;
   return str = str.charAt(0).toUpperCase() + str.substring(1);
+}
+
+/** Obtain `filePath` modification date and time */
+export async function getFileModTime(
+  filePath: string,
+): Promise<string> {
+  if (filePath.length < 1) {
+    return Promise.reject("UNKNOWN as no file path available.");
+  }
+  // check if the execution is remote as would not allow `Deno.lstat`.
+  if (filePath.startsWith("https://") || filePath.startsWith("http://")) {
+    return Promise.reject("UNKNOWN due to remote execution.");
+  }
+  // maybe have a URL path instead of OS path? Convert to an OS path if needed.
+  if (filePath.startsWith("file:")) {
+    filePath = fromFileUrl(filePath);
+  }
+  // get file stat and extract modified time value
+  try {
+    const fileInfo = await Deno.lstat(filePath);
+    return fileInfo.mtime
+      ? fileInfo.mtime.toUTCString()
+      : "UNKNOWN no file modification time available.";
+  } catch {
+    return Promise.reject(`UNKNOWN Deno.lstat failed for ${filePath}`);
+  }
 }
 
 //--------------------------------
@@ -116,7 +113,7 @@ export async function version(
 }
 
 //--------------------------------
-// MAIN
+// MAIN - used for testing only
 //--------------------------------
 if (import.meta.main) {
   const versionData = await version();
