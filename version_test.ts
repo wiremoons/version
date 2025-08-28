@@ -176,62 +176,69 @@ Deno.test("[*] isString() 'type_guard' : check undefined is string (false)", () 
 // Tests for 'getFileModTime()' below:
 const testModTime = await getFileModTime("./version.ts");
 
-Deno.test("[*] getFileModTime()' : exist file (true)", async () => {
+Deno.test("[*] getFileModTime() : exist file (true)", async () => {
   const actual1 = testModTime;
   const test1 = await getFileModTime("./version.ts");
   assertEquals(test1, actual1);
 });
 
-Deno.test("[*] getFileModTime()' : promise.reject for empty path (true)", async () => {
-  // Use a try...catch block to handle the rejected promise
+Deno.test("[*] getFileModTime() : promise.reject for empty path (true)", async () => {
   try {
     await getFileModTime("");
-    // If the above line does not throw, the test fails
     throw new Error("Function did not reject for empty path.");
   } catch (err) {
-    // Assert that the rejected promise's error message is as expected
-    assertEquals(err, "UNKNOWN as no file path available.");
+    if (err instanceof Error) {
+      assertEquals(err.message, "UNKNOWN as no file path available.");
+    } else {
+      throw new Error(`Expected an Error object, but received: ${err}`);
+    }
   }
 });
 
-Deno.test("[*] getFileModTime()' : promise.reject for 'https' remote execution (true)", async () => {
-  // Use a try...catch block to handle the rejected promise
+Deno.test("[*] getFileModTime() : promise.reject for 'https' remote execution (true)", async () => {
   try {
     await getFileModTime(
       "https://raw.githubusercontent.com/wiremoons/qpass/main/qpass.ts",
     );
-    // If the above line does not throw, the test fails
     throw new Error("Function did not reject for remote execution path.");
   } catch (err) {
-    // Assert that the rejected promise's error message is as expected
-    assertEquals(err, "UNKNOWN due to remote execution.");
+    if (err instanceof Error) {
+      assertEquals(err.message, "UNKNOWN due to remote execution.");
+    } else {
+      throw new Error(`Expected an Error object, but received: ${err}`);
+    }
   }
 });
 
-Deno.test("[*] getFileModTime()' : promise.reject for 'http' remote execution (true)", async () => {
-  // Use a try...catch block to handle the rejected promise
+Deno.test("[*] getFileModTime() : promise.reject for 'http' remote execution (true)", async () => {
   try {
     await getFileModTime(
       "https://raw.githubusercontent.com/wiremoons/qpass/main/qpass.ts",
     );
-    // If the above line does not throw, the test fails
     throw new Error("Function did not reject for remote execution path.");
   } catch (err) {
-    // Assert that the rejected promise's error message is as expected
-    assertEquals(err, "UNKNOWN due to remote execution.");
+    if (err instanceof Error) {
+      assertEquals(err.message, "UNKNOWN due to remote execution.");
+    } else {
+      throw new Error(`Expected an Error object, but received: ${err}`);
+    }
   }
 });
 
-Deno.test("[*] getFileModTime()' : promise.reject for non existant file (true)", async () => {
-  // Use a try...catch block to handle the rejected promise
+Deno.test("[*] getFileModTime() : promise.reject for non existant file (true)", async () => {
   try {
     await getFileModTime(
       "./non_existant_file.txt",
     );
-    // If the above line does not throw, the test fails
     throw new Error("Function did not reject for remote execution path.");
   } catch (err) {
-    // Assert that the rejected promise's error message is as expected
-    assertEquals(err, "UNKNOWN Deno.lstat failed for ./non_existant_file.txt");
+    if (err instanceof Error) {
+      assertEquals(
+        err.message,
+        "UNKNOWN Deno.lstat failed for ./non_existant_file.txt",
+      );
+    } else {
+      throw new Error(`Expected an Error object, but received: ${err}`);
+    }
   }
 });

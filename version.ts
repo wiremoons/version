@@ -59,11 +59,11 @@ export async function getFileModTime(
   filePath: string,
 ): Promise<string> {
   if (filePath.length < 1) {
-    return Promise.reject("UNKNOWN as no file path available.");
+    return Promise.reject(new Error("UNKNOWN as no file path available."));
   }
   // check if the execution is remote as would not allow `Deno.lstat`.
   if (filePath.startsWith("https://") || filePath.startsWith("http://")) {
-    return Promise.reject("UNKNOWN due to remote execution.");
+    return Promise.reject(new Error("UNKNOWN due to remote execution."));
   }
   // maybe have a URL path instead of OS path? Convert to an OS path if needed.
   if (filePath.startsWith("file:")) {
@@ -76,7 +76,9 @@ export async function getFileModTime(
       ? fileInfo.mtime.toUTCString()
       : "UNKNOWN no file modification time available.";
   } catch {
-    return Promise.reject(`UNKNOWN Deno.lstat failed for ${filePath}`);
+    return Promise.reject(
+      new Error(`UNKNOWN Deno.lstat failed for ${filePath}`),
+    );
   }
 }
 
