@@ -10,7 +10,7 @@
  * @date originally created: 24 Aug 2021
  * @date updated significantly: 31 Aug 2021
  * @date moved to jsr.io: 25 Aug 2025
- * @date improve remote handling for 'getFileModTime()': 27 Aug 2025
+ * @date improve remote handling for 'getFileModTime()': 28 Aug 2025
  *
  * @details Display version information for a Deno command line (CLI) program. The output fields displayed can
  * be customised using the `interface` named: `VersionOptions`.
@@ -98,9 +98,18 @@ export async function version(
     crYear = "2021 [DEFAULT]",
   } = verData ?? {};
 
+  let fileModTime: string;
+  try {
+    fileModTime = await getFileModTime(Deno.mainModule);
+  } catch (err) {
+    err instanceof Error
+      ? fileModTime = err.message
+      : fileModTime = "UNKNOWN unspecified error.";
+  }
+
   return (`
  Application '${basename(Deno.mainModule)}' is version '${version}'.
- Last modified on: ${await getFileModTime(Deno.mainModule) ?? "UNKNOWN"}
+ Last modified on: ${fileModTime}
  Running Deno version '${Deno.version.deno}' on '${
     toTitleCaseFirst(Deno.build.os)
   } [${Deno.build.arch} with ${navigator.hardwareConcurrency} CPU cores]'.
