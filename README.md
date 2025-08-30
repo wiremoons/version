@@ -1,5 +1,6 @@
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hyperium/hyper/master/LICENSE)
 [![](https://img.shields.io/badge/deno-v2.4.5-green.svg)](https://github.com/denoland/deno)
+![JSR Version](https://img.shields.io/jsr/v/wiremoons/version)
 
 # 'version()'
 
@@ -15,6 +16,13 @@ A brief description of the modules purpose is below.
 
 For more information, see the source code itself, as that includes additional
 comments. The tests for each module also provide examples of usage.
+
+## Using 'version()'
+
+The recommended approach for using `version()` in a project is via JSR.
+
+See: https://jsr.io/@wiremoons/version for details, if you are currently viewing
+this information on the [version() GitHub repo](https://github.com/wiremoons/version).
 
 ## Example Output
 
@@ -36,7 +44,7 @@ For licenses and further information visit:
 ## Tests
 
 The `version` module and supporting exports have associated tests. These can be
-run with the command: `deno test --allow-read`
+run with the command: `deno task test`
 
 ## License
 
