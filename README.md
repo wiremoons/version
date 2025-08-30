@@ -1,6 +1,6 @@
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hyperium/hyper/master/LICENSE)
 [![](https://img.shields.io/badge/deno-v2.4.5-green.svg)](https://github.com/denoland/deno)
-![JSR Version](https://img.shields.io/jsr/v/wiremoons/version)
+[![JSR version](https://img.shields.io/jsr/v/@wiremoons/version)](https://jsr.io/@wiremoons/version)
 
 # 'version()'
 
